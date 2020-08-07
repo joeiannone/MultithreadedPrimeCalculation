@@ -1,7 +1,6 @@
 package com.joeiannone.multithreadedprimecalculation;
 
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 
 /**
@@ -17,8 +16,6 @@ public class PrimeFinder {
     private Thread[] threads;
     
     public final ArrayList<Integer> primes = new ArrayList<>();
-    
-    private static final Semaphore semaphore = new Semaphore(1, true);
     
     
     public PrimeFinder(int N, int THREAD_COUNT) {
@@ -60,7 +57,7 @@ public class PrimeFinder {
                 /**
                  * Create thread and worker
                  */
-                this.threads[i] = new Thread(new PrimeWorker(this.semaphore, this.primes, this.NUMBERS_PER_THREAD*i, range));
+                this.threads[i] = new Thread(new PrimeWorker(this.primes, this.NUMBERS_PER_THREAD*i, range));
                 this.threads[i].start();
                 
             }

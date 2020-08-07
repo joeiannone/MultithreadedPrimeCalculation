@@ -1,7 +1,6 @@
 package com.joeiannone.multithreadedprimecalculation;
 
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 /**
  *
@@ -11,10 +10,9 @@ public class PrimeWorker implements Runnable {
     
     ArrayList<Integer> primes;
     int start, range;
-    Semaphore semaphore;
     
-    public PrimeWorker(Semaphore semaphore, ArrayList<Integer> primes, int start, int range) {
-        this.semaphore = semaphore;
+    public PrimeWorker(ArrayList<Integer> primes, int start, int range) {
+        
         this.primes = primes;
         this.start = start;
         this.range = range;
@@ -36,28 +34,17 @@ public class PrimeWorker implements Runnable {
             // if is prime
             if (PrimeFinder.isPrime(i)) {
                 
-                try {
-                    
-                    synchronized (this) {
-                        
-                        /**
-                         * Lock ArrayList while adding prime for thread safety
-                         */
-                        this.semaphore.acquire();
-                    
-                        this.primes.add(i);
-                    
-                        this.semaphore.release();
-                        
-                    }
-                    
-                } catch (InterruptedException ex) {
-                    
-                    System.err.println(ex);
                 
+                synchronized (this) {
+                    /**
+                     * Use synchronization on updating primes for thread safety
+                     */
+                    this.primes.add(i);
+                    
                 }
-              
+                
             }
+        
         }
         
     }
